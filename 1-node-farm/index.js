@@ -2,6 +2,10 @@ const fs = require('fs');
 const http = require('http');
 const url = require('url');
 
+const slugify = require('slugify');
+
+const replaceTemplateFunction = require('./modules/replaceTemplate');
+
 /////////////////////////////////
 // File
 
@@ -26,28 +30,15 @@ const url = require('url');
 /////////////////////////////////
 // SERVER
 
-// the code outhere is read only once
-
-const replaceTemplateFunction = (passTemplate, passProductObj) => {
-	let output = passTemplate.replace(/{%PRODUCTNAME%}/g,passProductObj.productName);
-	output = output.replace(/{%IMAGE%}/g,passProductObj.image);
-	output = output.replace(/{%PRICE%}/g,passProductObj.price);
-	output = output.replace(/{%FROM%}/g,passProductObj.from);
-	output = output.replace(/{%NUTRIENTS%}/g,passProductObj.nutrients);
-	output = output.replace(/{%QUANTITY%}/g,passProductObj.quantity);
-	output = output.replace(/{%DESCRIPTION%}/g,passProductObj.description);
-	output = output.replace(/{%ID%}/g,passProductObj.id);
-
-	if(!passProductObj.organic) output = output.replace(/{%NOT_ORGANIC%}/g,'not-organic');
-	return output;
-}
-
+// the code here is only read once
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
 const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`, 'utf-8');
 const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8');
 const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`, 'utf-8');
 const dataObj = JSON.parse(data);
 
+const slugs = dataObj.map(el => slugify(el.productName, { lower: true}));
+console.log(slugs);
 
 // the code downhere is read everytime it gets a request
 const server = http.createServer((req,res) =>{
@@ -83,7 +74,7 @@ const server = http.createServer((req,res) =>{
 			'Content-type' : 'text/html',
 			'my-own-header' : 'anything we want'
 		});
-		res.end('<h1>Page not found</h1>');
+		res.end('<h1>Page not found jaa</h1>');
 	}
 });
 
