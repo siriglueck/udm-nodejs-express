@@ -9,6 +9,7 @@
   "author": "SiriGlueck",
   "license": "ISC",
   "dependencies": {
+    "prettier": "^3.6.2",
     "slugify": "^1.6.6"
   },
   "devDependencies": {
